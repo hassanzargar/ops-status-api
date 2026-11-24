@@ -1,0 +1,11 @@
+services:
+  api:
+    build: .
+    container_name: ops-status-api
+    ports:
+      - "8090:8000"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
