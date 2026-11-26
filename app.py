@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import socket
 
-APP_VERSION = "1.0.0"
+APP_VERSION = "2.0.0"
 
 class StatusHandler(BaseHTTPRequestHandler):
     def do_GET(self):
