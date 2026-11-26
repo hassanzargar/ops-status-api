@@ -10,7 +10,7 @@ class StatusHandler(BaseHTTPRequestHandler):
             payload = {
                 "service": "ops-status-api",
                 "version": APP_VERSION,
-                "status": "degraded",
+                "status": "healthy",
                 "hostname": socket.gethostname(),
             }
             self.send_response(200)
