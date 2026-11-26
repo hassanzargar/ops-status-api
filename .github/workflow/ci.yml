@@ -1,0 +1,40 @@
+name: Ops-Status-API CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Check sync.sh syntax and lint
+        run: |
+          bash -n sync.sh
+          shellcheck sync.sh
+
+      - name: Validate docker-compose.yml
+        run: docker compose config --quiet
+
+      - name: Build and start container
+        run: docker compose up -d --build
+
+      - name: Smoke test /health endpoint
+        run: |
+          sleep 3
+          RESPONSE=$(curl -fsS http://127.0.0.1:8090/health)
+          echo "API Response: $RESPONSE"
+          echo "$RESPONSE" | grep -q '"status": "healthy"'
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Cleanup container
+        if: always()
+        run: docker compose down --volumes --remove-orphans
