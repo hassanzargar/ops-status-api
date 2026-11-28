@@ -1,8 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import socket
+import time
 
-APP_VERSION = "2.0.0"
+APP_VERSION = "2.1.0"
 
 class StatusHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -17,6 +18,12 @@ class StatusHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write((json.dumps(payload) + "\n").encode("utf-8"))
+        elif self.path == "/slow":
+            time.sleep(5)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(b'{"status": "slow-ok"}\n')
         else:
             self.send_response(404)
             self.send_header("Content-Type", "application/json")
